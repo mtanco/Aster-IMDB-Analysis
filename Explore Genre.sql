@@ -1,18 +1,8 @@
 --name=base_data_cnt
 SELECT 'All Rows' AS x, COUNT(*) AS y FROM mt_movie_genres; --14,092
 
---name=base_data_sample
-SELECT * FROM mt_movie_genres LIMIT 10;
-
 --name=genre_cnt
 SELECT genre, COUNT(*) AS CNT FROM mt_movie_genres GROUP BY 1 ORDER BY 2 DESC;
-
---name=genre_per_film
-SELECT CNT || ' Genres' AS genre_cnt, COUNT(*) AS CNT FROM (
-	SELECT movie_id, COUNT(*) AS CNT 
-	FROM mt_movie_genres 
-	GROUP BY 1
-) AS X GROUP BY CNT ORDER BY 2 DESC;
 
 --name=genre_relationships
 SELECT 
