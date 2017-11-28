@@ -45,7 +45,7 @@ SELECT genre, COUNT(*) AS CNT FROM mt_movie_genres GROUP BY 1 ORDER BY 2 DESC;
 --Reality-TV	2
 --Game-Show		1
 
---name=number_of_genres_per_film_trend
+--name=genre_per_film
 SELECT CNT || ' Genres' AS genre_cnt, COUNT(*) AS CNT FROM (
 	SELECT movie_id, COUNT(*) AS CNT 
 	FROM mt_movie_genres 
