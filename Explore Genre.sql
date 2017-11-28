@@ -50,7 +50,7 @@ SELECT CNT || ' Genres' AS genre_cnt, COUNT(*) AS CNT FROM (
 	SELECT movie_id, COUNT(*) AS CNT 
 	FROM mt_movie_genres 
 	GROUP BY 1
-) AS X GROUP BY 1 ORDER BY 2 DESC;
+) AS X GROUP BY CNT ORDER BY 2 DESC;
 
 --cnt	count(1)
 --3		1582
