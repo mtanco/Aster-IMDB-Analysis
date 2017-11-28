@@ -1,5 +1,5 @@
 --name=base_data_cnt
-SELECT COUNT(*) FROM mt_movie_genres; --14,092
+SELECT 'All Rows' AS x, COUNT(*) AS y FROM mt_movie_genres; --14,092
 
 --name=base_data_sample
 SELECT * FROM mt_movie_genres LIMIT 10;
@@ -16,7 +16,7 @@ SELECT * FROM mt_movie_genres LIMIT 10;
 --1578		Drama
 
 --name=genre_cnt
-SELECT genre, COUNT(*) FROM mt_movie_genres GROUP BY 1 ORDER BY 2 DESC;
+SELECT genre, COUNT(*) AS CNT FROM mt_movie_genres GROUP BY 1 ORDER BY 2 DESC;
 --genre			count(1)
 --Drama			2506
 --Comedy		1843
@@ -46,7 +46,7 @@ SELECT genre, COUNT(*) FROM mt_movie_genres GROUP BY 1 ORDER BY 2 DESC;
 --Game-Show		1
 
 --name=number_of_genres_per_film_trend
-SELECT CNT || ' Genres' AS genre_cnt, COUNT(*) FROM (
+SELECT CNT || ' Genres' AS genre_cnt, COUNT(*) AS CNT FROM (
 	SELECT movie_id, COUNT(*) AS CNT 
 	FROM mt_movie_genres 
 	GROUP BY 1
