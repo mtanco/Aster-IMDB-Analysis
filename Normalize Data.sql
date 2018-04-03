@@ -1,3 +1,15 @@
+/*Columns are in a non-intuitive order, here is them grouped by similar content*/
+movie_id,movie_title,title_year,facenumber_in_poster
+duration
+content_rating,language,country
+genres,plot_keywords
+director_name,actor_1_name,actor_2_name,actor_3_name
+movie_facebook_likes,director_facebook_likes,actor_1_facebook_likes
+actor_2_facebook_likes,actor_3_facebook_likes,cast_total_facebook_likes
+num_voted_users,num_critic_for_reviews,num_user_for_reviews
+gross,budget
+imdb_score,aspect_ratio
+
 SELECT 
 	movie_id,movie_title,title_year,facenumber_in_poster
 	,duration,content_rating,language,country
@@ -9,7 +21,7 @@ SELECT
 	,imdb_score ,aspect_ratio
 FROM imdb_scrape LIMIT 100
 
-DROP TABLE mt_movies
+DROP TABLE IF EXISTS mt_movies;
 CREATE TABLE mt_movies DISTRIBUTE BY HASH(movie_id) COMPRESS LOW AS
 SELECT 
 	movie_id
