@@ -105,3 +105,36 @@ from nPath (
 	)
 )
 
+--Input dataset
+select * from imdb_name_role limit 10;
+
+/*Movie ID, Role, Name, Title Year*/
+--571,director,Adam McKay,2006
+--1756,director,Adam McKay,2015
+--660,director,Adam McKay,2008
+--729,director,Adam Shankman,2005
+
+select count(*) from imdb_name_role; --27449
+
+/*Get career paths and count how often each occurs*/
+create table career_path distribute by hash(path) compress low as
+select path, count(*) as cnt
+from nPath(
+	on imdb_name_role partition by name order by title_year
+	mode(nonoverlapping) 
+	symbols(true as A)
+	pattern('^A{1,5}') --first up to 5 jobs
+	result(
+		first(name of A) as name
+		,accumulate(role of A) as path --career path
+	)
+)group by 1;
+
+/*Turn the path table into json*/
+INSERT INTO app_center_visualizations  (json) 
+SELECT json FROM Visualizer (
+    ON career_path PARTITION BY 1 
+    AsterFunction('npath') 
+    Title('Paths of Jobs') 
+    VizType('sankey')
+);
