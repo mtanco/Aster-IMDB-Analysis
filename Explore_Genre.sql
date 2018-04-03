@@ -47,3 +47,26 @@ SELECT json FROM Visualizer (
     Title('Paths of Jobs') 
     VizType('sankey')
 );
+
+drop table if exists movie_plot;
+create table movie_plot distribute by hash(docid) as
+select title_year || '_' || genre as docid
+	,plot as term
+from (
+	select title_year 
+		,regexp_split_to_table(plot_keywords, '\\|') as plot
+		,regexp_split_to_table(genres, '\\|') as genre
+	from imdb_scrape
+	order by 1
+) as x;
+analyze movie_plot;
+
+
+select term, count(*) as cnt
+from(
+	select title_year ,regexp_split_to_table(plot_keywords, '\\|') as term
+	from imdb_scrape
+) as x group by 1
+order by 2 desc limit 100
+
+
