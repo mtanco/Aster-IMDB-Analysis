@@ -58,3 +58,39 @@ order by 2 desc
 limit 100;
 
 select count(distinct actor_1_name) from actor_graph;
+
+drop table if exists imdb_name_role;
+create table imdb_name_role distribute by hash(name) compress low as
+select movie_id, 'director' as role, director_name as name, title_year
+from imdb_scrape
+where director_name is not null
+union all
+select movie_id, 'actor 1', actor_1_name, title_year
+from imdb_scrape
+where actor_1_name is not null
+union all
+select movie_id, 'actor 2', actor_2_name, title_year
+from imdb_scrape
+where actor_2_name is not null
+union all
+select movie_id, 'actor 3', actor_3_name, title_year
+from imdb_scrape
+where actor_3_name is not null;
+
+--more than 1 movie in a year??
+select name, title_year, count(distinct role)
+from imdb_name_role
+group by 1,2 having count(distinct role) > 1;
+
+--Not accurate due to ordering
+select *
+from nPath(
+	on imdb_name_role partition by name order by title_year
+	mode(nonoverlapping)
+	symbols(true as A)
+	pattern('A*')
+	result(
+		first(name of A) as name
+		,accumulate(role of A) as role_path
+	)
+)
