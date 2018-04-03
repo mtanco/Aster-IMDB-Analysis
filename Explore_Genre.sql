@@ -69,4 +69,39 @@ from(
 ) as x group by 1
 order by 2 desc limit 100
 
+drop table if exists tfidf_genre;
+create table tfidf_genre distribute by hash(genre) as 
+select 
+	substring(docid from 1 for 4)::int as year
+	,substring(docid from 6 for length(docid) - 5) as genre
+	,term
+from 
+(
+	select docid, term,tf_idf,rank() over(partition by docid order by tf_idf) as r
+	from tf_idf (
+		on (select * from tf(on movie_plot partition by docid)) as tf 
+			partition by term
+		on (select count(distinct docid) from movie_plot) 
+			as doccount dimension
+	) 
+) as x where r = 1 and (docid ilike '%194%')
+order by 1;
+
+
+
+
+
+select *
+from nPath (
+	on tfidf_genre partition by genre
+		order by year
+	mode(nonoverlapping)
+	symbols(true as A)
+	pattern('A*')
+	result(
+		first(genre of A) as genre
+		,accumulate(term of A) as path
+		,count(* of A) as cnt
+	)
+)
 
